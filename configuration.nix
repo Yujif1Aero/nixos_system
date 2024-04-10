@@ -59,7 +59,20 @@
 
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  #SMJM edited
+#  services.xserver.desktopManager.gnome.enable = true;
+   services.xserver.desktopManager.gnome = {
+    enable = true;
+    extraGSettingsOverrides = ''
+      [org.gnome.desktop.interface]
+      enable-hot-corners=true
+
+      [org.gnome.shell.overrides]
+      dynamic-workspaces=true
+      workspaces-only-on-primary=false
+    '';
+    };
+
 
   # Configure keymap in X11
   services.xserver = {
@@ -142,6 +155,9 @@
  
   # nix setting
 
+  
+
+  
   nix = {
     settings = {
       auto-optimise-store = true; # Nix storeの最適化
@@ -158,7 +174,12 @@
   # Japanese
   i18n.inputMethod = {
    enabled = "fcitx5";
-   fcitx5.addons = [pkgs.fcitx5-mozc];
+  fcitx5 = {
+    addons = [ pkgs.fcitx5-mozc ];
+   # config = {
+   #   punctuations = ",.";
+ # };
+  };
  };
 
  fonts = {
@@ -179,24 +200,24 @@
    };
  };
 
- programs = {
-    git = {
-      enable = true;
-    };
-    # neovim = {
-    #   enable = true;
-    #  # defaultEditor = true; # $EDITOR=nvimに設定
-    #   viAlias = true;
-    #   vimAlias = true;
-    # };
-    starship = {
-      enable = true;
-    };
-    zsh = {
-      enable = true;
-    };
+  programs = {
+ #    git = {
+ #      enable = true;
+ #    };
+ #    # neovim = {
+ #    #   enable = true;
+ #    #  # defaultEditor = true; # $EDITOR=nvimに設定
+ #    #   viAlias = true;
+ #    #   vimAlias = true;
+ #    # };
+     starship = {
+       enable = true;
+     };
+     zsh = {
+       enable = true;
+     };
     
-  };
+   };
  
   services.emacs = {
   enable = true;
