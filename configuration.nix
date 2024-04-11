@@ -22,6 +22,9 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  ##SMJM
+  boot.initrd.kernelModules = [ "amdgpu" ];
+##
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -52,8 +55,8 @@
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
-  ## SMJM input 
-  # services.xserver.videoDrivers = [ "amdgpu" ];
+  ## SMJM  
+  services.xserver.videoDrivers = [ "amdgpu" ];
   # nixpkgs.config.allowUnfree = true;
   ##
 
