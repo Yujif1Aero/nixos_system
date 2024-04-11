@@ -201,9 +201,9 @@
  };
 
   programs = {
- #    git = {
- #      enable = true;
- #    };
+     git = {
+       enable = true;
+     };
  #    # neovim = {
  #    #   enable = true;
  #    #  # defaultEditor = true; # $EDITOR=nvimに設定
