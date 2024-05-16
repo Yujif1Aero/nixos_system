@@ -276,8 +276,8 @@
   hardware.opengl.driSupport = true;
   hardware.opengl.driSupport32Bit = true;
 
-  # Enable the ROCm stack
-  programs.rocm.enable = true;
+  # # Enable the ROCm stack
+  # programs.rocm.enable = true;
  
  ##	
 }
