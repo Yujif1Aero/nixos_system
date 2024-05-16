@@ -26,7 +26,9 @@
   boot.initrd.kernelModules = [ "amdgpu" ];
 ##
 
-  networking.hostName = "nixos"; # Define your hostname.
+  
+  networking.hostName = "yujif1aero"; # Define your hostname.
+  # NetworkManagerを有効にしてネットワーク管理を簡素化
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -35,6 +37,12 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+
+  # Avahi（mDNSリゾルバ）を有効にしてホスト名解決を行う
+  services.avahi = {
+    enable = true;
+    nssmdns = true; # mDNSを有効にしてホスト名解決を行う
+  };
 
   # Set your time zone.
   time.timeZone = "Europe/Berlin";
