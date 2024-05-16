@@ -9,12 +9,12 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ]
-     # 環境に応じてインポートするモジュールを変更してください
-   ++ (with inputs.nixos-hardware.nixosModules; [
-     common-cpu-amd
-     common-gpu-amd
-     common-pc-ssd
-   ])
+ #    # 環境に応じてインポートするモジュールを変更してください
+ #  ++ (with inputs.nixos-hardware.nixosModules; [
+ #    common-cpu-amd
+ #    common-gpu-nvidia
+ #    common-pc-ssd
+ #  ])
    ++ [# xremapのNixOS modulesを使えるようにする
      inputs.xremap.nixosModules.default
    ];
@@ -23,11 +23,11 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   ##SMJM
-  boot.initrd.kernelModules = [ "amdgpu" ];
+  boot.initrd.kernelModules = [ "nvidia" ];
 ##
 
   
-  networking.hostName = "yujif1aero"; # Define your hostname.
+  networking.hostName = "yujikitaorus"; # Define your hostname.
   # NetworkManagerを有効にしてネットワーク管理を簡素化
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -64,7 +64,8 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
   ## SMJM  
-  services.xserver.videoDrivers = [ "amdgpu" ];
+  services.xserver.videoDrivers = [ "nvidia" ];
+
   # nixpkgs.config.allowUnfree = true;
   ##
 
@@ -265,6 +266,11 @@
      ];
    };
  };
-
+ nixpkgs.config.allowUnfree = true;  # 追加
+   # カーネルのバージョンを変更
+  boot.kernelPackages = pkgs.linuxPackages_5_15;
+  # 特定のNVIDIAドライバのバージョンを指定
+  hardware.opengl.setLdLibraryPath = true;
+  hardware.nvidia.package = pkgs.linuxPackages_5_15.nvidia_x11;
  ##	
 }
