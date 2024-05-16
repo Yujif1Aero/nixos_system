@@ -65,7 +65,7 @@
   services.xserver.enable = true;
   ## SMJM  
   services.xserver.videoDrivers = [ "amdgpu" ];
-  # nixpkgs.config.allowUnfree = true;
+ 
   ##
 
   # Enable the GNOME Desktop Environment.
@@ -266,7 +266,18 @@
    };
  };
   nixpkgs.config.allowUnfree = true;  # 追加
+  # OpenGL extra packages for ROCm
   hardware.opengl.extraPackages = with pkgs; [
-   rocmPackages.clr.icd
+    rocmPackages.clr.icd
+  ];
+
+  # Enable the Vulkan driver for AMD
+  hardware.opengl.enable = true;
+  hardware.opengl.driSupport = true;
+  hardware.opengl.driSupport32Bit = true;
+
+  # Enable the ROCm stack
+  programs.rocm.enable = true;
+ 
  ##	
 }
