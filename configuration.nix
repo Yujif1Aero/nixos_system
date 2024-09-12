@@ -278,6 +278,36 @@
 
   # # Enable the ROCm stack
   # programs.rocm.enable = true;
- 
- ##	
+
+
+   # tailscale（VPN）を有効化
+ # 非常に便利なのでおすすめ
+ services.tailscale.enable = true;
+ networking.firewall = {
+   enable = true;
+   # tailscaleの仮想NICを信頼する
+   # `<Tailscaleのホスト名>:<ポート番号>`のアクセスが可能になる
+   trustedInterfaces = ["tailscale0"];
+   allowedUDPPorts = [config.services.tailscale.port];
+ };
+
+  # Dockerをrootlessで有効化
+ virtualisation = {
+   docker = {
+     enable = true;
+     rootless = {
+       enable = true;
+       setSocketVariable = true; # $DOCKER_HOSTを設定
+     };
+   };
+ };
+
+ services.flatpak.enable = true;
+ xdg.portal.enable = true; # flatpakに必要
+
+  programs = {
+   noisetorch.enable = true;
+ };
+  ##
+  
 }
