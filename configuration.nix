@@ -147,7 +147,7 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -165,11 +165,7 @@
 
   ## SMJM setup
  
-  # nix setting
-
-  
-
-  
+  # nix setting  
   nix = {
     settings = {
       auto-optimise-store = true; # Nix storeの最適化
@@ -185,14 +181,21 @@
 
   # Japanese
   i18n.inputMethod = {
-   enabled = "fcitx5";
-  fcitx5 = {
-    addons = [ pkgs.fcitx5-mozc ];
-   # config = {
-   #   punctuations = ",.";
+    enabled = "fcitx5";
+    fcitx5.addons = with pkgs; [
+        fcitx5-mozc
+        fcitx5-gtk
+    ];
+};
+ #  i18n.inputMethod = {
+ #   enabled = "fcitx5";
+ #  fcitx5 = {
+ #    addons = [ pkgs.fcitx5-mozc ];
+ #   # config = {
+ #   #   punctuations = ",.";
+ # # };
+ #  };
  # };
-  };
- };
 
  fonts = {
    fonts = with pkgs; [
@@ -272,5 +275,34 @@
   # 特定のNVIDIAドライバのバージョンを指定
   hardware.opengl.setLdLibraryPath = true;
   hardware.nvidia.package = pkgs.linuxPackages_5_15.nvidia_x11;
+
+ # tailscale（VPN）を有効化
+ # 非常に便利なのでおすすめ
+ services.tailscale.enable = true;
+ networking.firewall = {
+   enable = true;
+   # tailscaleの仮想NICを信頼する
+   # `<Tailscaleのホスト名>:<ポート番号>`のアクセスが可能になる
+   trustedInterfaces = ["tailscale0"];
+   allowedUDPPorts = [config.services.tailscale.port];
+ };
+
+ # Dockerをrootlessで有効化
+ virtualisation = {
+   docker = {
+     enable = true;
+     rootless = {
+       enable = true;
+       setSocketVariable = true; # $DOCKER_HOSTを設定
+     };
+   };
+ };
+
+ services.flatpak.enable = true;
+ xdg.portal.enable = true; # flatpakに必要
+
+  programs = {
+   noisetorch.enable = true;
+ };
  ##	
 }
