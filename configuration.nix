@@ -24,6 +24,10 @@
   boot.loader.efi.canTouchEfiVariables = true;
   ##SMJM
   boot.initrd.kernelModules = [ "amdgpu" ];
+  # 統合GPUのカーネルモジュールを無効化
+  boot.blacklistedKernelModules  = ["radeon"];
+  # GRUBカーネルパラメータで統合GPUを無効化
+  boot.kernelParams = [ "modprobe.blacklist=radeon" ];
 ##
 
   
@@ -41,7 +45,7 @@
   # Avahi（mDNSリゾルバ）を有効にしてホスト名解決を行う
   services.avahi = {
     enable = true;
-    nssmdns = true; # mDNSを有効にしてホスト名解決を行う
+    nssmdns4 = true; # mDNSを有効にしてホスト名解決を行う
   };
 
   # Set your time zone.
@@ -86,9 +90,13 @@
 
 
   # Configure keymap in X11
-  services.xserver = {
+  # services.xserver = {
+  #   layout = "us";
+  #   xkbVariant = "";
+   # };
+  services.xserver.xkb = {
     layout = "us";
-    xkbVariant = "";
+    variant = "";
   };
 
   # Enable CUPS to print documents.
@@ -133,6 +141,9 @@
     wget
     #htop
     pciutils
+    mesa
+    vulkan-loader
+    vulkan-tools
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -193,8 +204,25 @@
   };
  };
 
- fonts = {
-   fonts = with pkgs; [
+ # fonts = {
+ #   fonts = with pkgs; [
+ #     noto-fonts-cjk-serif
+ #     noto-fonts-cjk-sans
+ #     noto-fonts-emoji
+ #     nerdfonts
+ #   ];
+ #   fontDir.enable = true;
+ #   fontconfig = {
+ #     defaultFonts = {
+ #       serif = ["Noto Serif CJK JP" "Noto Color Emoji"];
+ #       sansSerif = ["Noto Sans CJK JP" "Noto Color Emoji"];
+ #       monospace = ["JetBrainsMono Nerd Font" "Noto Color Emoji"];
+ #       emoji = ["Noto Color Emoji"];
+ #     };
+ #   };
+ # };
+fonts = {
+   packages = with pkgs; [
      noto-fonts-cjk-serif
      noto-fonts-cjk-sans
      noto-fonts-emoji
