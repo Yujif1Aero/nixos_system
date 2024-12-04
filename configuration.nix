@@ -10,11 +10,11 @@
       ./hardware-configuration.nix
     ]
    ## 環境に応じてインポートするモジュールを変更してください
-   # ++ (with inputs.nixos-hardware.nixosModules; [
-   #   common-cpu-amd
-   #   common-gpu-amd
-   #   common-pc-ssd
-   # ])
+   ++ (with inputs.nixos-hardware.nixosModules; [
+      common-cpu-amd
+#      common-gpu-amd            
+      common-pc-ssd
+   ])
    ++ [# xremapのNixOS modulesを使えるようにする
      inputs.xremap.nixosModules.default
    ];
@@ -22,12 +22,9 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  ##SMJM
-  boot.initrd.kernelModules = [ "amdgpu" ];
-  # 統合GPUのカーネルモジュールを無効化
-  boot.blacklistedKernelModules  = ["radeon"];
-  # GRUBカーネルパラメータで統合GPUを無効化
-  boot.kernelParams = [ "modprobe.blacklist=radeon" ];
+  ##SMJM https://nixos.wiki/wiki/AMD_GPU
+ # boot.initrd.kernelModules = [ "amdgpu" ];
+
 ##
 
   
@@ -68,7 +65,40 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
   ## SMJM  
-  services.xserver.videoDrivers = [ "amdgpu" ];
+#  services.xserver.videoDrivers = [ "amdgpu" ];
+  # OpenCLを有効化 ## https://theholytachanka.com/posts/setting-up-resolve/
+    hardware.opengl = {
+    enable = true;
+    driSupport = true;
+    driSupport32Bit = true;
+    extraPackages = with pkgs; [
+      # rocmPackages.clr.icd
+      # rocmPackages.clr
+      # rocmPackages.rocminfo
+      # rocmPackages.rocm-runtime
+    rocmPackages_5.clr.icd
+    rocmPackages_5.clr
+    rocmPackages_5.rocminfo
+    rocmPackages_5.rocm-runtime
+    ];
+  };
+# HIPライブラリ用のシンボリックリンク作成
+# OpenCLライブラリ用のシンボリックリンク作成
+# libamdocl64.soのシンボリックリンク
+# systemd.tmpfiles.rules = [
+#   "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr.icd}"
+#   "L+    /etc/OpenCL/vendors/amdocl64.icd   -    -    -    -    ${pkgs.rocmPackages.clr.icd}/etc/OpenCL/vendors/amdocl64.icd"
+#   "L+    /opt/rocm/lib/libamdocl64.so       -    -    -    -    ${pkgs.rocmPackages.clr.icd}/lib/libamdocl64.so"
+# ];
+systemd.tmpfiles.rules = [
+  "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages_5.clr.icd}"
+  "L+    /etc/OpenCL/vendors/amdocl64.icd   -    -    -    -    ${pkgs.rocmPackages_5.clr.icd}/etc/OpenCL/vendors/amdocl64.icd"
+  "L+    /opt/rocm/lib/libamdocl64.so       -    -    -    -    ${pkgs.rocmPackages_5.clr.icd}/lib/libamdocl64.so"
+];
+  
+  # # 不要なカーネルモジュールを無効化
+  # boot.blacklistedKernelModules = [ "radeon" ];
+
  
   ##
 
@@ -139,11 +169,14 @@
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
-    #htop
+    htop
     pciutils
-    mesa
-    vulkan-loader
-    vulkan-tools
+    fwupd
+    pkgs.davinci-resolve ## https://theholytachanka.com/posts/setting-up-resolve/
+    rocmPackages_5.clr
+    rocmPackages_5.rocm-runtime
+    rocmPackages_5.rocminfo
+    rocmPackages_5.clr.icd
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -294,15 +327,10 @@ fonts = {
    };
  };
   nixpkgs.config.allowUnfree = true;  # 追加
-  # OpenGL extra packages for ROCm
-  hardware.opengl.extraPackages = with pkgs; [
-    rocmPackages.clr.icd
-  ];
-
   # Enable the Vulkan driver for AMD
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport = true;
-  hardware.opengl.driSupport32Bit = true;
+  # hardware.opengl.enable = true;
+  # hardware.opengl.driSupport = true;
+  # hardware.opengl.driSupport32Bit = true;
 
   # # Enable the ROCm stack
   # programs.rocm.enable = true;
