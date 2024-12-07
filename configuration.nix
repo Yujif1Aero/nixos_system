@@ -26,8 +26,6 @@
   boot.initrd.kernelModules = [ "amdgpu" ];
 
 ##
-
-  
   networking.hostName = "yujif1aero"; # Define your hostname.
   # NetworkManagerを有効にしてネットワーク管理を簡素化
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -64,7 +62,7 @@
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
-  ## SMJM  
+  ## SMJM
 
   # OpenCLを有効化 ## https://theholytachanka.com/posts/setting-up-resolve/
     hardware.opengl = {
@@ -72,15 +70,21 @@
     driSupport = true;
     driSupport32Bit = true;
     extraPackages = with pkgs; [
-      # rocmPackages.clr.icd
-      # rocmPackages.clr
-      # rocmPackages.rocminfo
-      # rocmPackages.rocm-runtime
+       rocmPackages.clr.icd
+       rocmPackages.clr
+       rocmPackages.rocminfo
+       rocmPackages.rocm-runtime
     # rocmPackages_5.clr.icd
     # rocmPackages_5.clr
     # rocmPackages_5.rocminfo
     # rocmPackages_5.rocm-runtime
     ];
+    };
+ # 環境変数の設定
+    environment.variables = {
+    ## use cat /etc/OpenCL/vendors/amdocl64.icd . the output will be File: /etc/OpenCL/vendors/amdocl64.icd and /nix/store/8ccsn4iqdx3mgp0s6rn9mpmlkawpsnan-clr-6.0.2/lib/libamdocl64.so
+    LD_LIBRARY_PATH = "/nix/store/8ccsn4iqdx3mgp0s6rn9mpmlkawpsnan-clr-6.0.2/lib";
+    PATH = "/nix/store/8ccsn4iqdx3mgp0s6rn9mpmlkawpsnan-clr-6.0.2/bin:$PATH";
   };
 # HIPライブラリ用のシンボリックリンク作成
 # OpenCLライブラリ用のシンボリックリンク作成
@@ -153,7 +157,7 @@ systemd.tmpfiles.rules = [
   users.users.yujif1aero = {
     isNormalUser = true;
     description = "Yuji Shimojima";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "video" ];
     packages = with pkgs; [
       firefox
     #  thunderbird
@@ -169,11 +173,7 @@ systemd.tmpfiles.rules = [
     htop
     pciutils
     fwupd
-    pkgs.davinci-resolve ## https://theholytachanka.com/posts/setting-up-resolve/
-    # rocmPackages_5.clr
-    # rocmPackages_5.rocm-runtime
-    # rocmPackages_5.rocminfo
-    # rocmPackages_5.clr.icd
+  #  pkgs.davinci-resolve ## https://theholytachanka.com/posts/setting-up-resolve/
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -204,12 +204,7 @@ systemd.tmpfiles.rules = [
   system.stateVersion = "23.11"; # Did you read the comment?
 
   ## SMJM setup
- 
   # nix setting
-
-  
-
-  
   nix = {
     settings = {
       auto-optimise-store = true; # Nix storeの最適化
@@ -234,23 +229,6 @@ systemd.tmpfiles.rules = [
   };
  };
 
- # fonts = {
- #   fonts = with pkgs; [
- #     noto-fonts-cjk-serif
- #     noto-fonts-cjk-sans
- #     noto-fonts-emoji
- #     nerdfonts
- #   ];
- #   fontDir.enable = true;
- #   fontconfig = {
- #     defaultFonts = {
- #       serif = ["Noto Serif CJK JP" "Noto Color Emoji"];
- #       sansSerif = ["Noto Sans CJK JP" "Noto Color Emoji"];
- #       monospace = ["JetBrainsMono Nerd Font" "Noto Color Emoji"];
- #       emoji = ["Noto Color Emoji"];
- #     };
- #   };
- # };
 fonts = {
    packages = with pkgs; [
      noto-fonts-cjk-serif
@@ -285,16 +263,13 @@ fonts = {
      zsh = {
        enable = true;
      };
-    
    };
- 
   services.emacs = {
   enable = true;
   defaultEditor = true;
   };
 
 
-   
   services.xremap = {
    userName = "yujif1aero";
    serviceMode = "system";
@@ -323,17 +298,8 @@ fonts = {
      ];
    };
  };
-  nixpkgs.config.allowUnfree = true;  # 追加
-  # Enable the Vulkan driver for AMD
-  # hardware.opengl.enable = true;
-  # hardware.opengl.driSupport = true;
-  # hardware.opengl.driSupport32Bit = true;
-
-  # # Enable the ROCm stack
-  # programs.rocm.enable = true;
-
-
-   # tailscale（VPN）を有効化
+ nixpkgs.config.allowUnfree = true;  # 追加
+ # tailscale（VPN）を有効化
  # 非常に便利なのでおすすめ
  services.tailscale.enable = true;
  networking.firewall = {
@@ -362,5 +328,4 @@ fonts = {
    noisetorch.enable = true;
  };
   ##
-  
 }
