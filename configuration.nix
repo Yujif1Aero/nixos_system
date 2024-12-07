@@ -12,7 +12,7 @@
    ## 環境に応じてインポートするモジュールを変更してください
    ++ (with inputs.nixos-hardware.nixosModules; [
       common-cpu-amd
-#      common-gpu-amd            
+      common-gpu-amd
       common-pc-ssd
    ])
    ++ [# xremapのNixOS modulesを使えるようにする
@@ -23,7 +23,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   ##SMJM https://nixos.wiki/wiki/AMD_GPU
- # boot.initrd.kernelModules = [ "amdgpu" ];
+  boot.initrd.kernelModules = [ "amdgpu" ];
 
 ##
 
@@ -65,7 +65,7 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
   ## SMJM  
-#  services.xserver.videoDrivers = [ "amdgpu" ];
+
   # OpenCLを有効化 ## https://theholytachanka.com/posts/setting-up-resolve/
     hardware.opengl = {
     enable = true;
@@ -76,28 +76,25 @@
       # rocmPackages.clr
       # rocmPackages.rocminfo
       # rocmPackages.rocm-runtime
-    rocmPackages_5.clr.icd
-    rocmPackages_5.clr
-    rocmPackages_5.rocminfo
-    rocmPackages_5.rocm-runtime
+    # rocmPackages_5.clr.icd
+    # rocmPackages_5.clr
+    # rocmPackages_5.rocminfo
+    # rocmPackages_5.rocm-runtime
     ];
   };
 # HIPライブラリ用のシンボリックリンク作成
 # OpenCLライブラリ用のシンボリックリンク作成
 # libamdocl64.soのシンボリックリンク
-# systemd.tmpfiles.rules = [
-#   "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr.icd}"
-#   "L+    /etc/OpenCL/vendors/amdocl64.icd   -    -    -    -    ${pkgs.rocmPackages.clr.icd}/etc/OpenCL/vendors/amdocl64.icd"
-#   "L+    /opt/rocm/lib/libamdocl64.so       -    -    -    -    ${pkgs.rocmPackages.clr.icd}/lib/libamdocl64.so"
-# ];
 systemd.tmpfiles.rules = [
-  "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages_5.clr.icd}"
-  "L+    /etc/OpenCL/vendors/amdocl64.icd   -    -    -    -    ${pkgs.rocmPackages_5.clr.icd}/etc/OpenCL/vendors/amdocl64.icd"
-  "L+    /opt/rocm/lib/libamdocl64.so       -    -    -    -    ${pkgs.rocmPackages_5.clr.icd}/lib/libamdocl64.so"
+  "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr.icd}"
+  "L+    /etc/OpenCL/vendors/amdocl64.icd   -    -    -    -    ${pkgs.rocmPackages.clr.icd}/etc/OpenCL/vendors/amdocl64.icd"
+  "L+    /opt/rocm/lib/libamdocl64.so       -    -    -    -    ${pkgs.rocmPackages.clr.icd}/lib/libamdocl64.so"
 ];
-  
-  # # 不要なカーネルモジュールを無効化
-  # boot.blacklistedKernelModules = [ "radeon" ];
+# systemd.tmpfiles.rules = [
+#   "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages_5.clr.icd}"
+#   "L+    /etc/OpenCL/vendors/amdocl64.icd   -    -    -    -    ${pkgs.rocmPackages_5.clr.icd}/etc/OpenCL/vendors/amdocl64.icd"
+#   "L+    /opt/rocm/lib/libamdocl64.so       -    -    -    -    ${pkgs.rocmPackages_5.clr.icd}/lib/libamdocl64.so"
+# ];
 
  
   ##
@@ -161,7 +158,7 @@ systemd.tmpfiles.rules = [
       firefox
     #  thunderbird
     ];
-    shell = pkgs.zsh; 
+    shell = pkgs.zsh;
   };
 
   # List packages installed in system profile. To search, run:
@@ -173,10 +170,10 @@ systemd.tmpfiles.rules = [
     pciutils
     fwupd
     pkgs.davinci-resolve ## https://theholytachanka.com/posts/setting-up-resolve/
-    rocmPackages_5.clr
-    rocmPackages_5.rocm-runtime
-    rocmPackages_5.rocminfo
-    rocmPackages_5.clr.icd
+    # rocmPackages_5.clr
+    # rocmPackages_5.rocm-runtime
+    # rocmPackages_5.rocminfo
+    # rocmPackages_5.clr.icd
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
