@@ -286,6 +286,11 @@
    trustedInterfaces = ["tailscale0"];
    allowedUDPPorts = [config.services.tailscale.port];
  };
+ 
+ # ディスプレイマネージャを有効化（例: sddm）
+  services.xserver.displayManager.sddm.enable = true;
+ # xrdpサービスを有効化
+  services.xrdp.enable = true;
 
  # Dockerをrootlessで有効化
  virtualisation = {
