@@ -287,8 +287,7 @@
    allowedUDPPorts = [config.services.tailscale.port];
  };
  
- # ディスプレイマネージャを有効化（例: sddm）
-  services.xserver.displayManager.sddm.enable = true;
+
  # xrdpサービスを有効化
   services.xrdp.enable = true;
 
