@@ -189,15 +189,16 @@
   };
 
   # Japanese
+  # i18n 設定
   i18n.inputMethod = {
-    enabled = "fcitx5";
+    type = "fcitx5";
+    enable = true;
     fcitx5.addons = with pkgs; [
-        fcitx5-mozc
-        fcitx5-gtk
-	fcitx5-configtool
+      fcitx5-mozc
+      fcitx5-gtk
+      (pkgs.libsForQt5.fcitx5-qt)
     ];
-};
-
+  };
 services.dbus.enable = true;
 
  #  i18n.inputMethod = {
