@@ -96,7 +96,7 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  sound.enable = true;
+  ##sound.enable = true;  #unenable when nix flake update
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -202,7 +202,7 @@
      noto-fonts-cjk-serif
      noto-fonts-cjk-sans
      noto-fonts-emoji
-     nerdfonts
+     nerd-fonts.hack
    ];
    fontDir.enable = true;
    fontconfig = {
@@ -273,7 +273,7 @@
    # カーネルのバージョンを変更
   boot.kernelPackages = pkgs.linuxPackages_5_15;
   # 特定のNVIDIAドライバのバージョンを指定
-  hardware.opengl.setLdLibraryPath = true;
+  ##hardware.opengl.setLdLibraryPath = true; #unenable when nix flake update
   hardware.nvidia.package = pkgs.linuxPackages_5_15.nvidia_x11;
 
  # tailscale（VPN）を有効化
@@ -289,7 +289,11 @@
  
 
  # xrdpサービスを有効化
-  services.xrdp.enable = true;
+ 
+  services.xrdp = {
+  		enable = true;
+		defaultWindowManager = "${pkgs.gnome-session}/bin/gnome-session";
+};
 
  # Dockerをrootlessで有効化
  virtualisation = {
