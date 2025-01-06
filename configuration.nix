@@ -72,7 +72,6 @@
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   #SMJM edited
-#  services.xserver.desktopManager.gnome.enable = true;
    services.xserver.desktopManager.gnome = {
     enable = true;
     extraGSettingsOverrides = ''
@@ -127,6 +126,12 @@
     shell = pkgs.zsh; 
   };
 
+  environment.variables = {
+    INPUT_METHOD = "fcitx5";
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    XMODIFIERS = "@im=fcitx";
+  };
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -134,6 +139,10 @@
     wget
     #htop
     pciutils
+    fcitx5
+    fcitx5-mozc
+    fcitx5-gtk
+    fcitx5-configtool
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -185,8 +194,12 @@
     fcitx5.addons = with pkgs; [
         fcitx5-mozc
         fcitx5-gtk
+	fcitx5-configtool
     ];
 };
+
+services.dbus.enable = true;
+
  #  i18n.inputMethod = {
  #   enabled = "fcitx5";
  #  fcitx5 = {
