@@ -72,6 +72,7 @@
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   #SMJM edited
+ #  services.gnome.gnome-remote-desktop.enable = true;
    services.xserver.desktopManager.gnome = {
     enable = true;
     extraGSettingsOverrides = ''
@@ -125,11 +126,30 @@
     ];
     shell = pkgs.zsh; 
   };
+services.logind = {
+##  enable = true; # 必要であれば有効化
+  extraConfig = ''
+    HandleLidSwitch=ignore
+    HandlePowerKey=ignore
+    HandleSuspendKey=ignore
+    HandleHibernateKey=ignore
+    IdleAction=ignore
+    IdleActionSec=0
+  '';
+};
+  # Disable the GNOME3/GDM auto-suspend feature that cannot be disabled in GUI!
+  # If no user is logged in, the machine will power down after 20 minutes.
+  systemd.targets.sleep.enable = false;
+  systemd.targets.suspend.enable = false;
+  systemd.targets.hibernate.enable = false;
+  systemd.targets.hybrid-sleep.enable = false;
+
 
   environment.variables = {
     INPUT_METHOD = "fcitx5";
     GTK_IM_MODULE = "fcitx";
     QT_IM_MODULE = "fcitx";
+    CLUTTER_IM_MODULE="fcitx";
     XMODIFIERS = "@im=fcitx";
   };
   # List packages installed in system profile. To search, run:
@@ -139,10 +159,8 @@
     wget
     #htop
     pciutils
-    fcitx5
-    fcitx5-mozc
-    fcitx5-gtk
-    fcitx5-configtool
+    pkgs.gnome-session
+    gnome-remote-desktop
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -283,6 +301,11 @@ services.dbus.enable = true;
      ];
    };
  };
+ 
+  # ~/.xsession ファイルを生成するスクリプトを設定
+  systemd.tmpfiles.rules = [
+    "f /home/yujif1aero/.xsession 0644 yujif1aero users - gnome-session"
+  ];
  nixpkgs.config.allowUnfree = true;  # 追加
    # カーネルのバージョンを変更
   boot.kernelPackages = pkgs.linuxPackages_5_15;
@@ -298,15 +321,18 @@ services.dbus.enable = true;
    # tailscaleの仮想NICを信頼する
    # `<Tailscaleのホスト名>:<ポート番号>`のアクセスが可能になる
    trustedInterfaces = ["tailscale0"];
-   allowedUDPPorts = [config.services.tailscale.port];
+   allowedTCPPorts = [ 3389 ]; # RDP のデフォルトポート
+   allowedUDPPorts = [ config.services.tailscale.port  3389 ];
  };
+ 
  
 
  # xrdpサービスを有効化
  
   services.xrdp = {
   		enable = true;
-		defaultWindowManager = "${pkgs.gnome-session}/bin/gnome-session";
+		defaultWindowManager =  "${pkgs.pkgs.gnome-session}/bin/gnome-session";
+		openFirewall = true;
 };
 
  # Dockerをrootlessで有効化
