@@ -41,7 +41,7 @@
   # Avahi（mDNSリゾルバ）を有効にしてホスト名解決を行う
   services.avahi = {
     enable = true;
-    nssmdns = true; # mDNSを有効にしてホスト名解決を行う
+    nssmdns4 = true; # mDNSを有効にしてホスト名解決を行う
   };
 
   # Set your time zone.
@@ -87,8 +87,8 @@
 
   # Configure keymap in X11
   services.xserver = {
-    layout = "us";
-    xkbVariant = "";
+    xkb.layout = "us";
+    xkb.variant = "";
   };
 
   # Enable CUPS to print documents.
@@ -96,7 +96,7 @@
 
   # Enable sound with pipewire.
   ##sound.enable = true;  #unenable when nix flake update
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -212,7 +212,7 @@ services.dbus.enable = true;
  # };
 
  fonts = {
-   fonts = with pkgs; [
+   packages = with pkgs; [
      noto-fonts-cjk-serif
      noto-fonts-cjk-sans
      noto-fonts-emoji
