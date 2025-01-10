@@ -215,7 +215,13 @@ services.logind = {
 
   ## SMJM setup
   hardware.bluetooth.enable = true;  # Bluetooth サポートを有効化
-  # nix setting  
+  # services.xserver.displayManager.sessionCommands = ''
+#   if [ -f "$HOME/.xsession" ]; then
+#     . "$HOME/.xsession" &
+#   fi
+# '';
+
+  # nix setting 
   nix = {
     settings = {
       auto-optimise-store = true; # Nix storeの最適化
@@ -240,16 +246,6 @@ services.logind = {
 
 services.dbus.enable = true;
 services.dbus.packages = [ config.i18n.inputMethod.package ];
-
- #  i18n.inputMethod = {
- #   enabled = "fcitx5";
- #  fcitx5 = {
- #    addons = [ pkgs.fcitx5-mozc ];
- #   # config = {
- #   #   punctuations = ",.";
- # # };
- #  };
- # };
 
  fonts = {
    packages = with pkgs; [
@@ -326,14 +322,14 @@ services.dbus.packages = [ config.i18n.inputMethod.package ];
  };
  
   # ~/.xsession ファイルを生成するスクリプトを設定
-  systemd.tmpfiles.rules = [
-   "f /home/yujif1aero/.xsession 0644 yujif1aero users - exec startplasma-x11"
-  ];
+  # systemd.tmpfiles.rules = [
+  #  "f /home/yujif1aero/.xsession 0644 yujif1aero users - exec ibus-daemon -drx && startplasma-x11"
+  # ];
 
-  # ~/.xprofile ファイルを生成するスクリプトを設定
-  systemd.tmpfiles.rules = [
-   "f /home/yujif1aero/.xprofile 0644 yujif1aero users - exec ibus-daemon --xim --daemonize"
-  ];
+# systemd.tmpfiles.rules = [
+#   "f /home/yujif1aero/.xsession 0644 yujif1aero users - #!/bin/zsh\nibus-daemon --xim --daemonize\nexec startplasma-x11\n"
+# ];
+
   ## systemd.tmpfiles.rules = [
   ##  "f /home/yujif1aero/.xsession 0644 yujif1aero users - export XMODIFIERS='@im=fcitx' && export XMODIFIER='@im=fcitx' && export GTK_IM_MODULE='fcitx' && export QT_IM_MODULE='fcitx' && fcitx & && gnome-session"
   ## ];
