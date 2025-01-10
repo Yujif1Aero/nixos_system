@@ -1,3 +1,4 @@
+
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
@@ -41,7 +42,7 @@
   # Avahi（mDNSリゾルバ）を有効にしてホスト名解決を行う
   services.avahi = {
     enable = true;
-    nssmdns4 = true; # mDNSを有効にしてホスト名解決を行う
+    nssmdns = true; # mDNSを有効にしてホスト名解決を行う
   };
 
   # Set your time zone.
@@ -69,22 +70,33 @@
   # nixpkgs.config.allowUnfree = true;
   ##
 
-  # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.displayManager.gdm.autoSuspend = false;
-  #SMJM edited
+  # # Enable the GNOME Desktop Environment.
+  # services.xserver.displayManager.gdm.enable = true;
+  # services.xserver.displayManager.gdm.autoSuspend = false;
+  # #SMJM edited
  
-   services.xserver.desktopManager.gnome = {
-    enable = true;
-    extraGSettingsOverrides = ''
-      [org.gnome.desktop.interface]
-      enable-hot-corners=true
+  #  services.xserver.desktopManager.gnome = {
+  #   enable = true;
+  #   extraGSettingsOverrides = ''
+  #     [org.gnome.desktop.interface]
+  #     enable-hot-corners=true
 
-      [org.gnome.shell.overrides]
-      dynamic-workspaces=true
-      workspaces-only-on-primary=false
-    '';
-    };
+  #     [org.gnome.shell.overrides]
+  #     dynamic-workspaces=true
+  #     workspaces-only-on-primary=false
+  #   '';
+  #   };
+  # # Enable the KDE Plasma6  Desktop Environment.
+  services.xserver.displayManager.sddm.enable = true; # KDEのディスプレイマネージャ
+  services.xserver.desktopManager.plasma5 = {
+  enable = true;
+  };
+
+  environment.variables = {
+    GTK_THEME = "Breeze";
+    QT_STYLE_OVERRIDE = "Breeze";
+  };
+
 
 
   # Configure keymap in X11
@@ -98,13 +110,14 @@
 
   # Enable sound with pipewire.
   ##sound.enable = true;  #unenable when nix flake update
-  services.pulseaudio.enable = false;
+  hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+
     # If you want to use JACK applications, uncomment this
     #jack.enable = true;
 
@@ -146,13 +159,7 @@ services.logind = {
   systemd.targets.hybrid-sleep.enable = false;
 
 
-  environment.variables = {
-    INPUT_METHOD = "fcitx5";
-    GTK_IM_MODULE = "fcitx";
-    QT_IM_MODULE = "fcitx";
-    CLUTTER_IM_MODULE="fcitx";
-    XMODIFIERS = "@im=fcitx";
-  };
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -160,9 +167,23 @@ services.logind = {
     wget
     #htop
     pciutils
-    pkgs.gnome-session
-    gnome-remote-desktop
+    fcitx5
+    fcitx5-anthy
+    fcitx5-gtk
+    fcitx5-configtool
+    (pkgs.libsForQt5.fcitx5-qt)
   ];
+  # environment.variables = {
+  #  GTK_IM_MODULE = "ibus";
+  #  QT_IM_MODULE = "ibus";
+  #  XMODIFIERS = "@im=ibus";
+  # };
+  environment.variables = {
+    XMODIFIERS = "@im=fcitx";
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+  };
+
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -174,8 +195,14 @@ services.logind = {
 
   # List services that you want to enable:
 
-  # Enable the OpenSSH daemon.
+  ## Enable the OpenSSH daemon.
   services.openssh.enable = true;
+  services.openssh.settings = {
+  X11Forwarding = true;
+  X11DisplayOffset = 10;
+  X11UseLocalhost = true;
+};
+
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -192,7 +219,7 @@ services.logind = {
   system.stateVersion = "23.11"; # Did you read the comment?
 
   ## SMJM setup
- 
+  hardware.bluetooth.enable = true;  # Bluetooth サポートを有効化
   # nix setting  
   nix = {
     settings = {
@@ -209,15 +236,16 @@ services.logind = {
 
   # Japanese
   # i18n 設定
-  i18n.inputMethod = {
-    type = "fcitx5";
-    enable = true;
-    fcitx5.addons = with pkgs; [
-      fcitx5-mozc
-      fcitx5-gtk
-      (pkgs.libsForQt5.fcitx5-qt)
-    ];
+  i18n = {
+    inputMethod = {
+      enabled = "fcitx5";
+      fcitx5 = {
+        addons = [ pkgs.fcitx5-anthy ];
+      };
+    #enabled = "ibus";
+    };
   };
+
 services.dbus.enable = true;
 
  #  i18n.inputMethod = {
@@ -235,7 +263,7 @@ services.dbus.enable = true;
      noto-fonts-cjk-serif
      noto-fonts-cjk-sans
      noto-fonts-emoji
-     nerd-fonts.hack
+     nerdfonts
    ];
    fontDir.enable = true;
    fontconfig = {
@@ -266,6 +294,7 @@ services.dbus.enable = true;
      };
     
    };
+
  
   services.emacs = {
   enable = true;
@@ -304,15 +333,20 @@ services.dbus.enable = true;
  };
  
   # ~/.xsession ファイルを生成するスクリプトを設定
+
   systemd.tmpfiles.rules = [
-    "f /home/yujif1aero/.xsession 0644 yujif1aero users - gnome-session"
+   "f /home/yujif1aero/.xsession 0644 yujif1aero users - exec startplasma-x11"
   ];
+  ## systemd.tmpfiles.rules = [
+  ##  "f /home/yujif1aero/.xsession 0644 yujif1aero users - export XMODIFIERS='@im=fcitx' && export XMODIFIER='@im=fcitx' && export GTK_IM_MODULE='fcitx' && export QT_IM_MODULE='fcitx' && fcitx & && gnome-session"
+  ## ];
+
  nixpkgs.config.allowUnfree = true;  # 追加
    # カーネルのバージョンを変更
-  boot.kernelPackages = pkgs.linuxPackages_5_15;
+  boot.kernelPackages = pkgs.linuxPackages_6_1;
   # 特定のNVIDIAドライバのバージョンを指定
-  ##hardware.opengl.setLdLibraryPath = true; #unenable when nix flake update
-  hardware.nvidia.package = pkgs.linuxPackages_5_15.nvidia_x11;
+  hardware.opengl.setLdLibraryPath = true; #unenable when nix flake update
+  hardware.nvidia.package = pkgs.linuxPackages_6_1.nvidia_x11;
 
  # tailscale（VPN）を有効化
  # 非常に便利なのでおすすめ
@@ -332,7 +366,8 @@ services.dbus.enable = true;
  
   services.xrdp = {
   		enable = true;
-		defaultWindowManager =  "${pkgs.pkgs.gnome-session}/bin/gnome-session";
+		#defaultWindowManager =  "${pkgs.pkgs.gnome-session}/bin/gnome-session";
+		defaultWindowManager = "${pkgs.plasma5Packages.plasma-workspace}/bin/startplasma-x11";
 		openFirewall = true;
 };
 
