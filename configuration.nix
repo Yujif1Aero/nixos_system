@@ -167,22 +167,17 @@ services.logind = {
     wget
     #htop
     pciutils
-    fcitx5
-    fcitx5-anthy
-    fcitx5-gtk
-    fcitx5-configtool
-    (pkgs.libsForQt5.fcitx5-qt)
   ];
-  # environment.variables = {
-  #  GTK_IM_MODULE = "ibus";
-  #  QT_IM_MODULE = "ibus";
-  #  XMODIFIERS = "@im=ibus";
-  # };
   environment.variables = {
-    XMODIFIERS = "@im=fcitx";
-    GTK_IM_MODULE = "fcitx";
-    QT_IM_MODULE = "fcitx";
+   GTK_IM_MODULE = "ibus";
+   QT_IM_MODULE = "ibus";
+   XMODIFIERS = "@im=ibus";
   };
+  # environment.variables = {
+  #   XMODIFIERS = "@im=fcitx";
+  #   GTK_IM_MODULE = "fcitx";
+  #   QT_IM_MODULE = "fcitx";
+  # };
 
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -238,15 +233,13 @@ services.logind = {
   # i18n 設定
   i18n = {
     inputMethod = {
-      enabled = "fcitx5";
-      fcitx5 = {
-        addons = [ pkgs.fcitx5-anthy ];
-      };
-    #enabled = "ibus";
-    };
+      enabled = "ibus";
+      ibus.engines = with pkgs.ibus-engines; [ anthy  mozc ];
+     };
   };
 
 services.dbus.enable = true;
+services.dbus.packages = [ config.i18n.inputMethod.package ];
 
  #  i18n.inputMethod = {
  #   enabled = "fcitx5";
