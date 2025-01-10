@@ -326,9 +326,13 @@ services.dbus.packages = [ config.i18n.inputMethod.package ];
  };
  
   # ~/.xsession ファイルを生成するスクリプトを設定
-
   systemd.tmpfiles.rules = [
    "f /home/yujif1aero/.xsession 0644 yujif1aero users - exec startplasma-x11"
+  ];
+
+  # ~/.xprofile ファイルを生成するスクリプトを設定
+  systemd.tmpfiles.rules = [
+   "f /home/yujif1aero/.xprofile 0644 yujif1aero users - exec ibus-daemon --xim --daemonize"
   ];
   ## systemd.tmpfiles.rules = [
   ##  "f /home/yujif1aero/.xsession 0644 yujif1aero users - export XMODIFIERS='@im=fcitx' && export XMODIFIER='@im=fcitx' && export GTK_IM_MODULE='fcitx' && export QT_IM_MODULE='fcitx' && fcitx & && gnome-session"
