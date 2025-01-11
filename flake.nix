@@ -2,7 +2,7 @@
 {
   inputs = {
 ##   nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-   nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+   nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
    xremap.url = "github:xremap/nix-flake"; # キー設定をいい感じに変更できるツール
    nixos-hardware.url = "github:NixOS/nixos-hardware/master"; # ハードウェア設定のコレクション
   };

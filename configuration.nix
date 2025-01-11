@@ -344,8 +344,9 @@ services.dbus.packages = [ config.i18n.inputMethod.package ];
    # カーネルのバージョンを変更
   boot.kernelPackages = pkgs.linuxPackages_6_1;
   # 特定のNVIDIAドライバのバージョンを指定
-  hardware.opengl.setLdLibraryPath = true; #unenable when nix flake update
+  #hardware.opengl.setLdLibraryPath = true; #unenable when nix flake update
   hardware.nvidia.package = pkgs.linuxPackages_6_1.nvidia_x11;
+  hardware.nvidia.open = true;
 
  # tailscale（VPN）を有効化
  # 非常に便利なのでおすすめ
@@ -366,6 +367,7 @@ services.dbus.packages = [ config.i18n.inputMethod.package ];
   services.xrdp = {
   		enable = true;
 		openFirewall = true;
+		defaultWindowManager = "${pkgs.plasma5Packages.plasma-workspace}/bin/startplasma-x11";
 };
 
  # Dockerをrootlessで有効化
