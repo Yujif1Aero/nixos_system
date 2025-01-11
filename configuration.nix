@@ -87,15 +87,20 @@
   #   '';
   #   };
   # # Enable the KDE Plasma6  Desktop Environment.
-  services.xserver.displayManager.sddm.enable = true; # KDEのディスプレイマネージャ
-  services.xserver.desktopManager.plasma5 = {
-  enable = true;
-  };
-
-  environment.variables = {
-    GTK_THEME = "Breeze";
-    QT_STYLE_OVERRIDE = "Breeze";
-  };
+  services.xserver.displayManager.lightdm.enable = true;
+  # services.xserver.desktopManager.plasma5 = {
+  # enable = true;
+  # };
+  # services.xserver.desktopManager.gnome = {
+  # enable = true;
+  # };
+  services.xserver.desktopManager.plasma5.enable = true;
+  #services.xserver.windowManager.i3.enable = true;
+  xdg.portal.config.common.default = "kde";
+  # environment.variables = {
+  #   GTK_THEME = "Breeze";
+  #   QT_STYLE_OVERRIDE = "Breeze";
+  # };
 
 
 
@@ -215,12 +220,13 @@ services.logind = {
 
   ## SMJM setup
   hardware.bluetooth.enable = true;  # Bluetooth サポートを有効化
-  # services.xserver.displayManager.sessionCommands = ''
-#   if [ -f "$HOME/.xsession" ]; then
-#     . "$HOME/.xsession" &
-#   fi
-# '';
-
+  services.xserver.displayManager.sessionCommands = ''
+  # IBusデーモンの自動起動
+  if [ -z "$(pgrep ibus-daemon)" ]; then
+    ibus-daemon --xim --daemonize
+    ibus-daemon -drx
+  fi
+'';
   # nix setting 
   nix = {
     settings = {
@@ -359,8 +365,6 @@ services.dbus.packages = [ config.i18n.inputMethod.package ];
  
   services.xrdp = {
   		enable = true;
-		#defaultWindowManager =  "${pkgs.pkgs.gnome-session}/bin/gnome-session";
-		defaultWindowManager = "${pkgs.plasma5Packages.plasma-workspace}/bin/startplasma-x11";
 		openFirewall = true;
 };
 
