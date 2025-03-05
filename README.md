@@ -11,3 +11,8 @@ sudo nixos-rebuild switch --flake .#myNixOS
 
 ## check tailscale
 sudo tailscale status
+
+## Japanese
+```bash
+ibus-daemon -drx
+```
