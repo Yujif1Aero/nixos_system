@@ -234,12 +234,12 @@ services.logind = {
       experimental-features = ["nix-command" "flakes"];
     };
     # ガベージコレクションを自動実行
-    gc = {
-     automatic = true;
-     dates = "weekly";
-     options = "--delete-older-than 7d";
-   };
+  gc = {
+    automatic = true;
+    dates = "monthly";  # systemdタイマーを月1に
+    options = "--delete-older-than 30d";  # 30日以上前のものだけ削除
   };
+
 
   # Japanese
   # i18n 設定

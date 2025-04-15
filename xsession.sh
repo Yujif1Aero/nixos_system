@@ -1,1 +1,1 @@
-ibus-daemon -drx && startplasma-x11 &
+startplasma-x11 &
