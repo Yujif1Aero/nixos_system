@@ -1,4 +1,4 @@
-# Initial settiong
+# Initial setting
 ```bash
 ls /etc/nixos/
 configuration.nix hardware-configuration.nix

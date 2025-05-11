@@ -10,22 +10,22 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ]
- #    # 環境に応じてインポートするモジュールを変更してください
- #  ++ (with inputs.nixos-hardware.nixosModules; [
- #    common-cpu-amd
- #    common-gpu-nvidia
- #    common-pc-ssd
- #  ])
-   ++ [# xremapのNixOS modulesを使えるようにする
-     inputs.xremap.nixosModules.default
-   ];
+    #    # 環境に応じてインポートするモジュールを変更してください
+    #  ++ (with inputs.nixos-hardware.nixosModules; [
+    #    common-cpu-amd
+    #    common-gpu-nvidia
+    #    common-pc-ssd
+    #  ])
+    ++ [# xremapのNixOS modulesを使えるようにする
+      inputs.xremap.nixosModules.default
+    ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   ##SMJM
   boot.initrd.kernelModules = [ "nvidia" ];
-##
+  ##
 
   
   networking.hostName = "yujikitaorus"; # Define your hostname.
@@ -74,7 +74,7 @@
   # services.xserver.displayManager.gdm.enable = true;
   # services.xserver.displayManager.gdm.autoSuspend = false;
   # #SMJM edited
- 
+  
   #  services.xserver.desktopManager.gnome = {
   #   enable = true;
   #   extraGSettingsOverrides = ''
@@ -141,13 +141,13 @@
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
       firefox
-    #  thunderbird
+      #  thunderbird
     ];
     shell = pkgs.zsh; 
   };
-services.logind = {
-##  enable = true; # 必要であれば有効化
-  extraConfig = ''
+  services.logind = {
+    ##  enable = true; # 必要であれば有効化
+    extraConfig = ''
     HandleLidSwitch=ignore
     HandlePowerKey=ignore
     HandleSuspendKey=ignore
@@ -155,7 +155,7 @@ services.logind = {
     IdleAction=ignore
     IdleActionSec=0
   '';
-};
+  };
   # Disable the GNOME3/GDM auto-suspend feature that cannot be disabled in GUI!
   # If no user is logged in, the machine will power down after 20 minutes.
   systemd.targets.sleep.enable = false;
@@ -174,9 +174,9 @@ services.logind = {
     pciutils
   ];
   environment.variables = {
-   GTK_IM_MODULE = "ibus";
-   QT_IM_MODULE = "ibus";
-   XMODIFIERS = "@im=ibus";
+    GTK_IM_MODULE = "ibus";
+    QT_IM_MODULE = "ibus";
+    XMODIFIERS = "@im=ibus";
   };
   # environment.variables = {
   #   XMODIFIERS = "@im=fcitx";
@@ -198,10 +198,10 @@ services.logind = {
   ## Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.openssh.settings = {
-  X11Forwarding = true;
-  X11DisplayOffset = 10;
-  X11UseLocalhost = true;
-};
+    X11Forwarding = true;
+    X11DisplayOffset = 10;
+    X11UseLocalhost = true;
+  };
 
 
   # Open ports in the firewall.
@@ -234,158 +234,154 @@ services.logind = {
       experimental-features = ["nix-command" "flakes"];
     };
     # ガベージコレクションを自動実行
-  gc = {
-    automatic = true;
-    dates = "monthly";  # systemdタイマーを月1に
-    options = "--delete-older-than 30d";  # 30日以上前のものだけ削除
+    gc = {
+      automatic = true;
+      dates = "monthly";  # systemdタイマーを月1に
+      options = "--delete-older-than 30d";  # 30日以上前のものだけ削除
+    };
   };
 
 
-  # Japanese
-  # i18n 設定
-  i18n = {
-    inputMethod = {
-      enabled = "ibus";
-      ibus.engines = with pkgs.ibus-engines; [ anthy  mozc ];
-     };
-  };
+    # Japanese
+    # i18n 設定
+    i18n = {
+      inputMethod = {
+        enabled = "ibus";
+        ibus.engines = with pkgs.ibus-engines; [ anthy  mozc ];
+      };
+    };
 
-services.dbus.enable = true;
-services.dbus.packages = [ config.i18n.inputMethod.package ];
+    services.dbus.enable = true;
+    services.dbus.packages = [ config.i18n.inputMethod.package ];
 
- fonts = {
-   packages = with pkgs; [
-     noto-fonts-cjk-serif
-     noto-fonts-cjk-sans
-     noto-fonts-emoji
-     nerdfonts
-   ];
-   fontDir.enable = true;
-   fontconfig = {
-     defaultFonts = {
-       serif = ["Noto Serif CJK JP" "Noto Color Emoji"];
-       sansSerif = ["Noto Sans CJK JP" "Noto Color Emoji"];
-       monospace = ["JetBrainsMono Nerd Font" "Noto Color Emoji"];
-       emoji = ["Noto Color Emoji"];
-     };
-   };
- };
+    fonts = {
+      packages = with pkgs; [
+        noto-fonts-cjk-serif
+        noto-fonts-cjk-sans
+        noto-fonts-emoji
+        nerdfonts
+      ];
+      fontDir.enable = true;
+      fontconfig = {
+        defaultFonts = {
+          serif = ["Noto Serif CJK JP" "Noto Color Emoji"];
+          sansSerif = ["Noto Sans CJK JP" "Noto Color Emoji"];
+          monospace = ["JetBrainsMono Nerd Font" "Noto Color Emoji"];
+          emoji = ["Noto Color Emoji"];
+        };
+      };
+    };
 
-  programs = {
-     git = {
-       enable = true;
-     };
- #    # neovim = {
- #    #   enable = true;
- #    #  # defaultEditor = true; # $EDITOR=nvimに設定
- #    #   viAlias = true;
- #    #   vimAlias = true;
- #    # };
-     starship = {
-       enable = true;
-     };
-     zsh = {
-       enable = true;
-     };
+    programs = {
+      git = {
+        enable = true;
+      };
+      #    # neovim = {
+      #    #   enable = true;
+      #    #  # defaultEditor = true; # $EDITOR=nvimに設定
+      #    #   viAlias = true;
+      #    #   vimAlias = true;
+      #    # };
+      starship = {
+        enable = true;
+      };
+      zsh = {
+        enable = true;
+      };
+      noisetorch.enable = true;
+    };
+
+    services.emacs = {
+      enable = true;
+      defaultEditor = true;
+    };
+
+
     
-   };
+    services.xremap = {
+      userName = "yujif1aero";
+      serviceMode = "system";
+      config = {
+        modmap = [
+          {
+            # CapsLockをCtrlに置換
+            name = "CapsLock is dead";
+            remap = {
+              CapsLock = "Ctrl_L";
+            };
+          }
+        ];
+        keymap = [
+          {
+            # Ctrl + HがどのアプリケーションでもBackspaceになるように変更
+            name = "Ctrl+H should be enabled on all apps as BackSpace";
+            remap = {
+              C-h = "Backspace";
+            };
+            # 一部アプリケーション（ターミナルエミュレータ）を対象から除外
+            #application = {
+            #  not = ["Alacritty" "Kitty" "Wezterm"];
+            #};
+          }
+        ];
+      };
+    };
+    
+    # ~/.xsession ファイルを生成するスクリプトを設定
+    # systemd.tmpfiles.rules = [
+    #  "f /home/yujif1aero/.xsession 0644 yujif1aero users - exec ibus-daemon -drx && startplasma-x11"
+    # ];
 
- 
-  services.emacs = {
-  enable = true;
-  defaultEditor = true;
-  };
+    # systemd.tmpfiles.rules = [
+    #   "f /home/yujif1aero/.xsession 0644 yujif1aero users - #!/bin/zsh\nibus-daemon --xim --daemonize\nexec startplasma-x11\n"
+    # ];
 
+    ## systemd.tmpfiles.rules = [
+    ##  "f /home/yujif1aero/.xsession 0644 yujif1aero users - export XMODIFIERS='@im=fcitx' && export XMODIFIER='@im=fcitx' && export GTK_IM_MODULE='fcitx' && export QT_IM_MODULE='fcitx' && fcitx & && gnome-session"
+    ## ];
 
-   
-  services.xremap = {
-   userName = "yujif1aero";
-   serviceMode = "system";
-   config = {
-     modmap = [
-       {
-         # CapsLockをCtrlに置換
-         name = "CapsLock is dead";
-         remap = {
-           CapsLock = "Ctrl_L";
-         };
-       }
-     ];
-     keymap = [
-       {
-         # Ctrl + HがどのアプリケーションでもBackspaceになるように変更
-         name = "Ctrl+H should be enabled on all apps as BackSpace";
-         remap = {
-           C-h = "Backspace";
-         };
-         # 一部アプリケーション（ターミナルエミュレータ）を対象から除外
-         #application = {
-         #  not = ["Alacritty" "Kitty" "Wezterm"];
-         #};
-       }
-     ];
-   };
- };
- 
-  # ~/.xsession ファイルを生成するスクリプトを設定
-  # systemd.tmpfiles.rules = [
-  #  "f /home/yujif1aero/.xsession 0644 yujif1aero users - exec ibus-daemon -drx && startplasma-x11"
-  # ];
+    nixpkgs.config.allowUnfree = true;  # 追加
+    # カーネルのバージョンを変更
+    boot.kernelPackages = pkgs.linuxPackages_6_1;
+    # 特定のNVIDIAドライバのバージョンを指定
+    #hardware.opengl.setLdLibraryPath = true; #unenable when nix flake update
+    hardware.nvidia.package = pkgs.linuxPackages_6_1.nvidia_x11;
+    hardware.nvidia.open = true;
 
-# systemd.tmpfiles.rules = [
-#   "f /home/yujif1aero/.xsession 0644 yujif1aero users - #!/bin/zsh\nibus-daemon --xim --daemonize\nexec startplasma-x11\n"
-# ];
+    # tailscale（VPN）を有効化
+    # 非常に便利なのでおすすめ
+    services.tailscale.enable = true;
+    networking.firewall = {
+      enable = true;
+      # tailscaleの仮想NICを信頼する
+      # `<Tailscaleのホスト名>:<ポート番号>`のアクセスが可能になる
+      trustedInterfaces = ["tailscale0"];
+      allowedTCPPorts = [ 3389 ]; # RDP のデフォルトポート
+      allowedUDPPorts = [ config.services.tailscale.port  3389 ];
+    };
+    
+    
 
-  ## systemd.tmpfiles.rules = [
-  ##  "f /home/yujif1aero/.xsession 0644 yujif1aero users - export XMODIFIERS='@im=fcitx' && export XMODIFIER='@im=fcitx' && export GTK_IM_MODULE='fcitx' && export QT_IM_MODULE='fcitx' && fcitx & && gnome-session"
-  ## ];
-
- nixpkgs.config.allowUnfree = true;  # 追加
-   # カーネルのバージョンを変更
-  boot.kernelPackages = pkgs.linuxPackages_6_1;
-  # 特定のNVIDIAドライバのバージョンを指定
-  #hardware.opengl.setLdLibraryPath = true; #unenable when nix flake update
-  hardware.nvidia.package = pkgs.linuxPackages_6_1.nvidia_x11;
-  hardware.nvidia.open = true;
-
- # tailscale（VPN）を有効化
- # 非常に便利なのでおすすめ
- services.tailscale.enable = true;
- networking.firewall = {
-   enable = true;
-   # tailscaleの仮想NICを信頼する
-   # `<Tailscaleのホスト名>:<ポート番号>`のアクセスが可能になる
-   trustedInterfaces = ["tailscale0"];
-   allowedTCPPorts = [ 3389 ]; # RDP のデフォルトポート
-   allowedUDPPorts = [ config.services.tailscale.port  3389 ];
- };
- 
- 
-
- # xrdpサービスを有効化
- 
-  services.xrdp = {
+    # xrdpサービスを有効化
+    
+    services.xrdp = {
   		enable = true;
-		openFirewall = true;
-		defaultWindowManager = "${pkgs.plasma5Packages.plasma-workspace}/bin/startplasma-x11";
-};
+		  openFirewall = true;
+		  defaultWindowManager = "${pkgs.plasma5Packages.plasma-workspace}/bin/startplasma-x11";
+    };
 
- # Dockerをrootlessで有効化
- virtualisation = {
-   docker = {
-     enable = true;
-     rootless = {
-       enable = true;
-       setSocketVariable = true; # $DOCKER_HOSTを設定
-     };
-   };
- };
+    # Dockerをrootlessで有効化
+    virtualisation = {
+      docker = {
+        enable = true;
+        rootless = {
+          enable = true;
+          setSocketVariable = true; # $DOCKER_HOSTを設定
+        };
+      };
+    };
 
- services.flatpak.enable = true;
- xdg.portal.enable = true; # flatpakに必要
+    services.flatpak.enable = true;
+    xdg.portal.enable = true; # flatpakに必要
+  }
 
-  programs = {
-   noisetorch.enable = true;
- };
- ##	
-}
