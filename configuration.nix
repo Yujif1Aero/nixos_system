@@ -383,5 +383,15 @@
 
     services.flatpak.enable = true;
     xdg.portal.enable = true; # flatpakに必要
+
+ fileSystems."/mnt/ysraid8TB" = {
+    device = "/dev/disk/by-uuid/237f7ba4-fcb2-4293-adb7-f0f581d43cc6";
+    fsType = "ext4";
+    options = [ "defaults" ];
+  };
+ # 起動時に所有者やパーミッションを設定
+  systemd.tmpfiles.rules = [
+    "d /mnt/ysraid8TB 0777 - - - -"
+  ];
   }
 
