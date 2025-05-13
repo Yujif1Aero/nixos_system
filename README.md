@@ -16,3 +16,5 @@ sudo tailscale status
 ```bash
 ibus-daemon -drx
 ```
+## Xsession
+put home dir `.xsession`
