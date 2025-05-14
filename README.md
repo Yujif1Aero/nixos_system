@@ -18,3 +18,6 @@ ibus-daemon -drx
 ```
 ## Xsession
 put home dir `.xsession`
+
+# nixos_system
+sudo nixos-rebuild switch --flake .#myNixOS

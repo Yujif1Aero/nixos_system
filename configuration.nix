@@ -138,7 +138,7 @@
   users.users.yujif1aero = {
     isNormalUser = true;
     description = "Yuji Shimojima";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "video" ];
     packages = with pkgs; [
       firefox
       #  thunderbird
@@ -197,7 +197,10 @@
 
   ## Enable the OpenSSH daemon.
   services.openssh.enable = true;
+  #services.openssh.permitRootLogin = "no";           # rootログイン禁止
+  #services.openssh.passwordAuthentication = false;   # パスワード認証を許可(true)（鍵認証にするなら false）
   services.openssh.settings = {
+    Port = 443;
     X11Forwarding = true;
     X11DisplayOffset = 10;
     X11UseLocalhost = true;
@@ -355,9 +358,10 @@
       enable = true;
       # tailscaleの仮想NICを信頼する
       # `<Tailscaleのホスト名>:<ポート番号>`のアクセスが可能になる
-      trustedInterfaces = ["tailscale0"];
-      allowedTCPPorts = [ 3389 ]; # RDP のデフォルトポート
-      allowedUDPPorts = [ config.services.tailscale.port  3389 ];
+      allowedTCPPorts = [ 22 443  3389];
+      trustedInterfaces = ["tailscale0" "enp5s0"];
+#      allowedTCPPorts = [ 3389 ]; # RDP のデフォルトポート
+      allowedUDPPorts = [ config.services.tailscale.port  3389 443];
     };
     
     
