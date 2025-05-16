@@ -172,6 +172,7 @@
     wget
     #htop
     pciutils
+    x11vnc
   ];
   environment.variables = {
     GTK_IM_MODULE = "ibus";
@@ -300,7 +301,6 @@
     };
 
 
-    
     services.xremap = {
       userName = "yujif1aero";
       serviceMode = "system";
@@ -358,10 +358,10 @@
       enable = true;
       # tailscaleの仮想NICを信頼する
       # `<Tailscaleのホスト名>:<ポート番号>`のアクセスが可能になる
-      allowedTCPPorts = [ 22 443  3389];
+      allowedTCPPorts = [ 22 443 3389 5900];
       trustedInterfaces = ["tailscale0" "enp5s0"];
 #      allowedTCPPorts = [ 3389 ]; # RDP のデフォルトポート
-      allowedUDPPorts = [ config.services.tailscale.port  3389 443];
+      allowedUDPPorts = [ config.services.tailscale.port  3389 443  5900];
     };
     
     
@@ -397,5 +397,5 @@
   systemd.tmpfiles.rules = [
     "d /mnt/ysraid8TB 0777 - - - -"
   ];
-  }
+}
 
