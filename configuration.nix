@@ -173,6 +173,7 @@
     #htop
     pciutils
     x11vnc
+    google-chrome
   ];
   environment.variables = {
     GTK_IM_MODULE = "ibus";
@@ -396,5 +397,13 @@
   systemd.tmpfiles.rules = [
     "d /mnt/ysraid8TB 0777 - - - -"
   ];
+
+
+  xdg.mime.defaultApplications = {
+   "text/html" = "google-chrome.desktop";
+   "x-scheme-handler/http" = "google-chrome.desktop";
+   "x-scheme-handler/https" = "google-chrome.desktop";
+  };
+
 }
 
