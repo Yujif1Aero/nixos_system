@@ -363,15 +363,14 @@
 #      allowedTCPPorts = [ 3389 ]; # RDP のデフォルトポート
       allowedUDPPorts = [ config.services.tailscale.port  3389 443  5900];
     };
-    
-    
 
     # xrdpサービスを有効化
     
     services.xrdp = {
   		enable = true;
 		  openFirewall = true;
-		  defaultWindowManager = "${pkgs.plasma5Packages.plasma-workspace}/bin/startplasma-x11";
+      defaultWindowManager = "${pkgs.plasma5Packages.plasma-workspace}/bin/startplasma-x11";
+      # defaultWindowManager = "${pkgs.xfce.xfce4}/bin/startxfce4";
     };
 
     # Dockerをrootlessで有効化
