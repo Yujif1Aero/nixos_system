@@ -16,6 +16,7 @@ sudo tailscale status
 ```bash
 ibus-daemon -drx
 ```
+put home dir `fcitx5.sh` and `setxkbmap_us.sh`
 ## Xsession
 put home dir `.xsession`
 
