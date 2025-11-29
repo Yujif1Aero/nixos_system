@@ -173,7 +173,7 @@
     #htop
     pciutils
     x11vnc
-    google-chrome
+#    google-chrome
   ];
   environment.variables = {
     GTK_IM_MODULE = "ibus";
