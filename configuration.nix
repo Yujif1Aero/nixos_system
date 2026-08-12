@@ -405,5 +405,7 @@
    "x-scheme-handler/https" = "google-chrome.desktop";
   };
 
+  programs.nix-ld.enable = true; #for vscode
+
 }
 
