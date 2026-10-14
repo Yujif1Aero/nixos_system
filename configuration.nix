@@ -23,6 +23,8 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  # 2026-10-14: memtest86+ entry in the systemd-boot menu (RAM check after segfaults)
+  boot.loader.systemd-boot.memtest86.enable = true;
   ##SMJM
   boot.initrd.kernelModules = [ "nvidia" ];
   ##
@@ -176,15 +178,10 @@
 #    google-chrome
   ];
   environment.variables = {
-    GTK_IM_MODULE = "ibus";
-    QT_IM_MODULE = "ibus";
-    XMODIFIERS = "@im=ibus";
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    XMODIFIERS = "@im=fcitx";
   };
-  # environment.variables = {
-  #   XMODIFIERS = "@im=fcitx";
-  #   GTK_IM_MODULE = "fcitx";
-  #   QT_IM_MODULE = "fcitx";
-  # };
 
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -225,13 +222,6 @@
 
   ## SMJM setup
   hardware.bluetooth.enable = true;  # Bluetooth サポートを有効化
-  services.xserver.displayManager.sessionCommands = ''
-  # IBusデーモンの自動起動
-  if [ -z "$(pgrep ibus-daemon)" ]; then
-    ibus-daemon --xim --daemonize
-    ibus-daemon -drx
-  fi
-'';
   # nix setting 
   nix = {
     settings = {
@@ -251,8 +241,8 @@
     # i18n 設定
     i18n = {
       inputMethod = {
-        enabled = "ibus";
-        ibus.engines = with pkgs.ibus-engines; [ anthy  mozc ];
+        enabled = "fcitx5";
+        fcitx5.addons = with pkgs; [ fcitx5-mozc ];
       };
     };
 
@@ -408,4 +398,3 @@
   programs.nix-ld.enable = true; #for vscode
 
 }
-
