@@ -25,6 +25,10 @@
   boot.loader.efi.canTouchEfiVariables = true;
   # 2026-10-14: memtest86+ entry in the systemd-boot menu (RAM check after segfaults)
   boot.loader.systemd-boot.memtest86.enable = true;
+  # 2026-10-15: stopgap until the bad DIMM is replaced. memtest86+ BadRAM range
+  # 0x653a60100..0x653a67fff (~25.3 GiB) with the CURRENT BIOS memory settings;
+  # the address shifts if interleave/NUMA settings or the DIMM population change.
+  boot.kernelParams = [ "memmap=1M$0x653a00000" ];
   ##SMJM
   boot.initrd.kernelModules = [ "nvidia" ];
   ##
@@ -174,6 +178,8 @@
     wget
     #htop
     pciutils
+    dmidecode # 2026-10-15: DIMM slot/part-number listing (sudo dmidecode -t memory)
+    smartmontools # 2026-10-15: NVMe health (sudo smartctl -a /dev/nvme0)
     x11vnc
 #    google-chrome
   ];
